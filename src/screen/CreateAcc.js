@@ -1,79 +1,84 @@
+import React, {useState} from 'react';
 import {
+  Text,
+  View,
   Alert,
   Image,
-  SafeAreaView,
   StyleSheet,
-  Text,
-  CheckBox,
+  SafeAreaView,
   TouchableOpacity,
-  View,
 } from 'react-native';
-import React, {useState} from 'react';
-import ConstantImages from './constants/ConstantImages';
-import ButtonComp from '../components/ButtonComp';
+
+import {colors, fontSize, hp} from '../helper/GlobalFunc';
 import AppComp from '../components/AppComp';
+import ButtonComp from '../components/ButtonComp';
+import ConstantImages from './constants/ConstantImages';
 import TextInputComp from '../components/TextInputComp';
 
 const CreateAcc = props => {
-  const [email, setEmail] = useState('');
-  const [emailEr, setEmailEr] = useState('');
   const [pass, setPass] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [nameEr, setNameEr] = useState('');
   const [passEr, setPassEr] = useState('');
+  const [emailEr, setEmailEr] = useState('');
+  const [checkBox, setCheckBox] = useState(false);
   const [confirmPass, setConfirmPass] = useState('');
   const [confirmPassEr, setConfirmPassEr] = useState('');
-  const [name, setName] = useState('');
-  const [nameEr, setNameEr] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-  const NameValidation = val => {
-    if (val.length === 0) {
+  const NameValidation = () => {
+    if (name.length === 0) {
       setNameEr('Name must be enter');
+    } else if (name.length > 0) {
+      setNameEr('');
     }
   };
 
-  const confirmPassValidation = val => {
-    if (val.length === 0) {
+  const confirmPassValidation = () => {
+    if (confirmPass.length === 0) {
       setConfirmPassEr('Confirm password must be enter');
-    } else if (val !== pass) {
+    } else if (confirmPass !== pass) {
       setConfirmPassEr('Passwords do NOT match');
-    } else if (val === pass) {
+    } else if (confirmPass === pass) {
       setConfirmPassEr('');
     }
   };
 
-  const passValidation = val => {
+  const passValidation = () => {
     let reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,}$/;
 
-    if (val.length === 0) {
+    if (pass.length === 0) {
       setPassEr('password must be enter');
-    } else if (reg.test(val) === false) {
+    } else if (reg.test(pass) === false) {
       setPassEr(
         'password must contain seven characters including one uppercase letter, one lowercase letter and one number. ',
       );
-    } else if (reg.test(val) === true) {
+    } else if (reg.test(pass) === true) {
       setPassEr('');
     }
   };
 
-  const emailValidation = val => {
+  const emailValidation = () => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
-    if (val.length === 0) {
+    if (email.length === 0) {
       setEmailEr('Email address must be enter');
-    } else if (reg.test(val) === false) {
+    } else if (reg.test(email) === false) {
       setEmailEr('Enter valid email address');
-    } else if (reg.test(val) === true) {
+    } else if (reg.test(email) === true) {
       setEmailEr('');
     }
   };
+
   return (
     <SafeAreaView style={styles.main}>
       <View style={styles.imageView}>
         <TouchableOpacity onPress={() => props.navigation.goBack()}>
           <Image
             source={ConstantImages.back}
-            style={{...styles.image, height: 10, width: 17}}
+            style={[styles.image, {height: 10, width: 17}]}
           />
         </TouchableOpacity>
         <Image source={ConstantImages.logo} style={styles.image} />
@@ -86,8 +91,9 @@ const CreateAcc = props => {
           value={name}
           onChangeText={text => {
             setName(text);
-            NameValidation(text);
           }}
+          onSubmitEditing={() => NameValidation()}
+          onPressIn={() => setNameEr('')}
           error={nameEr}
         />
         <TextInputComp
@@ -95,50 +101,69 @@ const CreateAcc = props => {
           value={email}
           onChangeText={text => {
             setEmail(text);
-            emailValidation(text);
           }}
+          onPressIn={() => setEmailEr('')}
           error={emailEr}
+          onSubmitEditing={() => emailValidation()}
+          multiline={true}
         />
         <TextInputComp
           text={'Password'}
           value={pass}
+          source={passwordVisible ? ConstantImages.hide : ConstantImages.view}
+          secureTextEntry={!passwordVisible}
+          onPress={() => setPasswordVisible(!passwordVisible)}
           onChangeText={text => {
             setPass(text);
-            passValidation(text);
           }}
+          onSubmitEditing={() => passValidation()}
+          onPressIn={() => setPassEr('')}
           error={passEr}
         />
 
         <TextInputComp
           text={'Confirm Password'}
           value={confirmPass}
+          source={
+            confirmPasswordVisible ? ConstantImages.hide : ConstantImages.view
+          }
+          secureTextEntry={!confirmPasswordVisible}
+          onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
           onChangeText={text => {
             setConfirmPass(text);
-            confirmPassValidation(text);
           }}
+          onSubmitEditing={() => confirmPassValidation()}
+          onPressIn={() => setConfirmPassEr('')}
           error={confirmPassEr}
         />
       </View>
 
       <View style={{flexDirection: 'row', marginLeft: 53, marginBottom: 30}}>
-        <TouchableOpacity style={styles.box} />
+        <TouchableOpacity onPress={() => setCheckBox(!checkBox)}>
+          <Image
+            source={
+              checkBox ? ConstantImages.checkBox : ConstantImages.blankCheckBox
+            }
+            style={{height: hp(13), width: hp(13)}}
+          />
+        </TouchableOpacity>
 
         <Text style={styles.termText}> I understood the</Text>
-        <Text style={{...styles.termText, color: '#00B140'}}>
+        <Text style={{...styles.termText, color: colors.lightGreen}}>
           {' '}
           terms & policy.
         </Text>
       </View>
       <ButtonComp
-        text={'SIGN IN'}
+        text={'SIGN UP'}
         onPress={() => {
-          if (emailEr || passEr) {
-            if (emailEr) {
-              setEmailEr(emailEr);
-            }
-            if (passEr) {
-              setPassEr(passEr);
-            }
+          NameValidation();
+          passValidation();
+          confirmPassValidation();
+          emailValidation();
+
+          if (checkBox === false) {
+            Alert.alert('You must agree term & condition');
           } else {
             props.navigation.navigate('CreateAcc');
           }
@@ -150,7 +175,7 @@ const CreateAcc = props => {
           ...styles.text,
           fontSize: 20,
           fontWeight: '400',
-          color: '#888888',
+          color: colors.gray,
           marginTop: 26,
           marginBottom: 30,
         }}>
@@ -175,10 +200,10 @@ const CreateAcc = props => {
 
       <View
         style={{flexDirection: 'row', justifyContent: 'center', marginTop: 43}}>
-        <Text style={styles.textInputHead}>Don’t have an account?</Text>
-        <Text style={{...styles.textInputHead, color: '#00B140'}}>
+        <Text style={styles.textInputHead}>Have an account?</Text>
+        <Text style={{...styles.textInputHead, color: colors.lightGreen}}>
           {' '}
-          SIGN UP
+          SIGN IN
         </Text>
       </View>
     </SafeAreaView>
@@ -190,7 +215,7 @@ export default CreateAcc;
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
 
   image: {
@@ -208,6 +233,7 @@ const styles = StyleSheet.create({
   },
 
   text: {
+    // fontSize: fontSize.font27,
     fontSize: 27,
     fontWeight: '600',
     textAlign: 'center',
@@ -234,7 +260,7 @@ const styles = StyleSheet.create({
   textInputHead: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#6F6F6F',
+    color: colors.darkGray,
   },
 
   termText: {
@@ -246,6 +272,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 13,
     width: 13,
-    borderColor: '#00B140',
+    borderColor: colors.lightGreen,
   },
 });

@@ -1,23 +1,26 @@
 import {
   Alert,
+  Text,
+  View,
+  StyleSheet,
   Image,
   SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import React, {useState} from 'react';
-import ConstantImages from './constants/ConstantImages';
-import ButtonComp from '../components/ButtonComp';
+
 import AppComp from '../components/AppComp';
+import {colors} from '../helper/GlobalFunc';
+import ButtonComp from '../components/ButtonComp';
+import TextInputComp from '../components/TextInputComp';
+import ConstantImages from './constants/ConstantImages';
 
 const SignIn = props => {
-  const [email, setEmail] = useState('');
-  const [emailEr, setEmailEr] = useState('');
   const [pass, setPass] = useState('');
+  const [email, setEmail] = useState('');
   const [passEr, setPassEr] = useState('');
+  const [emailEr, setEmailEr] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const passValidation = val => {
     let reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,}$/;
@@ -40,46 +43,49 @@ const SignIn = props => {
       setEmailEr('Email address must be enter');
     } else if (reg.test(val) === false) {
       setEmailEr('Enter valid email address');
-    } else if (reg.test(val) === true) {
+    } else if (reg?.test(val) === true) {
       setEmailEr('');
     }
   };
   return (
     <SafeAreaView style={styles.main}>
-      <View style={styles.imageView}>
-        <Image source={ConstantImages.logo} style={styles.image} />
-      </View>
+      <Image source={ConstantImages.logo} style={styles.image} />
 
       <Text style={styles.text}>Sign in your account</Text>
-
-      <View style={styles.textInputView}>
-        <Text style={styles.textInputHead}>Email</Text>
-        <TextInput
-          style={styles.textInput}
+      <View style={{marginVertical: 30}}>
+        <TextInputComp
+          text={'Email'}
           value={email}
           onChangeText={text => {
             setEmail(text);
-            emailValidation(text);
           }}
+          onPressIn={() => setEmailEr('')}
+          error={emailEr}
+          onSubmitEditing={text => emailValidation(text)}
+          multiline={true}
         />
-        {emailEr ? <Text style={styles.error}>{emailEr}</Text> : null}
-      </View>
-      <View style={{...styles.textInputView, marginTop: 0, marginBottom: 37}}>
-        <Text style={styles.textInputHead}>Password</Text>
-        <TextInput
-          style={styles.textInput}
+        <TextInputComp
+          text={'Password'}
           value={pass}
+          source={passwordVisible ? ConstantImages.hide : ConstantImages.view}
+          secureTextEntry={!passwordVisible}
+          onPress={() => setPasswordVisible(!passwordVisible)}
           onChangeText={text => {
             setPass(text);
-            passValidation(text);
           }}
+          onSubmitEditing={text => passValidation(text)}
+          onPressIn={() => setPassEr('')}
+          error={passEr}
         />
-        {passEr ? <Text style={styles.error}>{passEr}</Text> : null}
       </View>
 
       <ButtonComp
         text={'SIGN IN'}
         onPress={() => {
+          // if (email === '' || pass === '') {
+          //   Alert.alert('Value must be enter');
+          //   return;
+          // }
           if (emailEr || passEr) {
             if (emailEr) {
               setEmailEr(emailEr);
@@ -98,7 +104,7 @@ const SignIn = props => {
           ...styles.text,
           fontSize: 20,
           fontWeight: '400',
-          color: '#888888',
+          color: colors.gray,
           marginTop: 26,
           marginBottom: 30,
         }}>
@@ -125,8 +131,11 @@ const SignIn = props => {
         style={{flexDirection: 'row', justifyContent: 'center', marginTop: 43}}>
         <Text style={styles.textInputHead}>Don’t have an account?</Text>
         <TouchableOpacity
-          onPress={() => props.navigation.navigate('CreateAcc')}>
-          <Text style={{...styles.textInputHead, color: '#00B140'}}>
+          onPress={() => {
+            console.log('entered');
+            props.navigation.navigate('CreateAcc');
+          }}>
+          <Text style={{...styles.textInputHead, color: colors.lightGreen}}>
             {' '}
             SIGN UP
           </Text>
@@ -141,12 +150,15 @@ export default SignIn;
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
 
   image: {
     height: 54,
     width: 54,
+    alignSelf: 'center',
+    marginTop: 91,
+    marginBottom: 73,
   },
 
   imageView: {
@@ -164,7 +176,7 @@ const styles = StyleSheet.create({
   textInputHead: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#6F6F6F',
+    color: colors.lightGray,
   },
 
   textInputView: {
@@ -175,7 +187,7 @@ const styles = StyleSheet.create({
   textInput: {
     height: 42,
     width: 288,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: colors.offWhite,
     marginVertical: 13,
     borderRadius: 10,
   },

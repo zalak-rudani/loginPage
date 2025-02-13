@@ -1,15 +1,46 @@
-import {StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
+import {
+  Text,
+  View,
+  Image,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
-const TextInputComp = ({text, value, onChangeText, error}) => {
+const TextInputComp = ({
+  text,
+  value,
+  error,
+  source,
+  onPress,
+  multiline,
+  placeholder,
+  onChangeText,
+  onSubmitEditing,
+  onPressIn,
+  onPressOut,
+  secureTextEntry,
+}) => {
   return (
     <View style={styles.textInputView}>
       <Text style={styles.textInputHead}>{text}</Text>
-      <TextInput
-        style={styles.textInput}
-        value={value}
-        onChangeText={onChangeText}
-      />
+      <View style={styles.textInput}>
+        <TextInput
+          style={{flex: 1}}
+          multiline={multiline}
+          value={value}
+          onChangeText={onChangeText}
+          secureTextEntry={secureTextEntry}
+          placeholder={placeholder}
+          onSubmitEditing={onSubmitEditing}
+          onPressIn={onPressIn}
+          onPressOut={onPressOut}
+        />
+        <TouchableOpacity onPress={onPress}>
+          <Image source={source} style={styles.image} />
+        </TouchableOpacity>
+      </View>
       {{error} ? <Text style={styles.error}>{error}</Text> : null}
     </View>
   );
@@ -28,12 +59,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 51,
   },
 
+  image: {
+    height: 15,
+    width: 15,
+  },
   textInput: {
     height: 42,
     width: 288,
+    alignItems: 'center',
     backgroundColor: '#FAFAFA',
     marginTop: 13,
     borderRadius: 10,
+    flexDirection: 'row',
+    padding: 10,
   },
 
   error: {
