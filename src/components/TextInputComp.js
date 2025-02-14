@@ -7,19 +7,22 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import {colors, hp, wp} from '../helper/GlobalFunc';
 
 const TextInputComp = ({
   text,
   value,
   error,
   source,
+  onFocus,
   onPress,
+  onBlur,
+  onPressIn,
   multiline,
   placeholder,
+  keyboardType,
   onChangeText,
   onSubmitEditing,
-  onPressIn,
-  onPressOut,
   secureTextEntry,
 }) => {
   return (
@@ -35,7 +38,9 @@ const TextInputComp = ({
           placeholder={placeholder}
           onSubmitEditing={onSubmitEditing}
           onPressIn={onPressIn}
-          onPressOut={onPressOut}
+          keyboardType={keyboardType}
+          onFocus={onFocus}
+          onBlur={onBlur}
         />
         <TouchableOpacity onPress={onPress}>
           <Image source={source} style={styles.image} />
@@ -52,26 +57,26 @@ const styles = StyleSheet.create({
   textInputHead: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#6F6F6F',
+    color: colors.lightGray,
   },
 
   textInputView: {
-    marginHorizontal: 51,
+    marginHorizontal: wp(51),
   },
 
   image: {
-    height: 15,
-    width: 15,
+    height: hp(15),
+    width: hp(15),
   },
   textInput: {
-    height: 42,
-    width: 288,
-    alignItems: 'center',
-    backgroundColor: '#FAFAFA',
-    marginTop: 13,
+    height: hp(42),
+    width: wp(288),
+    padding: 10,
+    marginTop: hp(13),
     borderRadius: 10,
     flexDirection: 'row',
-    padding: 10,
+    alignItems: 'center',
+    backgroundColor: colors.offWhite,
   },
 
   error: {

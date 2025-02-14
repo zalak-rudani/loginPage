@@ -1,6 +1,7 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import {hp, wp} from '../helper/GlobalFunc';
+import {Image, StyleSheet, TouchableOpacity} from 'react-native';
+
+import {colors, hp, wp} from '../helper/GlobalFunc';
 
 const AppComp = ({source, onPress}) => {
   return (
@@ -14,16 +15,16 @@ export default AppComp;
 
 const styles = StyleSheet.create({
   button: {
-    height: hp(42),
     width: wp(86),
-    backgroundColor: 'gray',
+    height: hp(42),
     borderRadius: wp(5),
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.offWhite,
   },
 
   image: {
-    height: hp(27),
     width: hp(27),
+    height: hp(27),
   },
 });

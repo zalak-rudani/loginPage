@@ -1,19 +1,19 @@
 import {
-  Alert,
   Text,
   View,
-  StyleSheet,
   Image,
+  Alert,
+  StyleSheet,
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
 import React, {useState} from 'react';
 
 import AppComp from '../components/AppComp';
-import {colors} from '../helper/GlobalFunc';
+import {colors, hp, strings, wp} from '../helper/GlobalFunc';
 import ButtonComp from '../components/ButtonComp';
 import TextInputComp from '../components/TextInputComp';
-import ConstantImages from './constants/ConstantImages';
+import ConstantImages from '../helper/constants/ConstantImages';
 
 const SignIn = props => {
   const [pass, setPass] = useState('');
@@ -22,28 +22,28 @@ const SignIn = props => {
   const [emailEr, setEmailEr] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const passValidation = val => {
+  const passValidation = () => {
     let reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,}$/;
 
-    if (val.length === 0) {
-      setPassEr('password must be enter');
-    } else if (reg.test(val) === false) {
+    if (pass.length === 0) {
+      setPassEr('password must be entered');
+    } else if (reg.test(pass) === false) {
       setPassEr(
         'password must contain seven characters including one uppercase letter, one lowercase letter and one number. ',
       );
-    } else if (reg.test(val) === true) {
+    } else if (reg.test(pass) === true) {
       setPassEr('');
     }
   };
 
-  const emailValidation = val => {
+  const emailValidation = () => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
-    if (val.length === 0) {
+    if (email.length === 0) {
       setEmailEr('Email address must be enter');
-    } else if (reg.test(val) === false) {
+    } else if (reg.test(email) === false) {
       setEmailEr('Enter valid email address');
-    } else if (reg?.test(val) === true) {
+    } else if (reg.test(email) === true) {
       setEmailEr('');
     }
   };
@@ -51,7 +51,7 @@ const SignIn = props => {
     <SafeAreaView style={styles.main}>
       <Image source={ConstantImages.logo} style={styles.image} />
 
-      <Text style={styles.text}>Sign in your account</Text>
+      <Text style={styles.text}>{strings.signIn.acc}</Text>
       <View style={{marginVertical: 30}}>
         <TextInputComp
           text={'Email'}
@@ -59,10 +59,10 @@ const SignIn = props => {
           onChangeText={text => {
             setEmail(text);
           }}
-          onPressIn={() => setEmailEr('')}
           error={emailEr}
-          onSubmitEditing={text => emailValidation(text)}
-          multiline={true}
+          onSubmitEditing={() => emailValidation()}
+          onBlur={() => emailValidation()}
+          // onFocus={() => emailValidation()}
         />
         <TextInputComp
           text={'Password'}
@@ -73,26 +73,28 @@ const SignIn = props => {
           onChangeText={text => {
             setPass(text);
           }}
-          onSubmitEditing={text => passValidation(text)}
-          onPressIn={() => setPassEr('')}
+          onSubmitEditing={() => passValidation()}
+          onBlur={() => passValidation()}
+          // onFocus={() => passValidation()}
           error={passEr}
         />
       </View>
 
       <ButtonComp
-        text={'SIGN IN'}
+        text={strings.button.signIn}
+        customStyle={{backgroundColor: colors.lightGreen}}
         onPress={() => {
-          // if (email === '' || pass === '') {
-          //   Alert.alert('Value must be enter');
-          //   return;
-          // }
-          if (emailEr || passEr) {
-            if (emailEr) {
-              setEmailEr(emailEr);
+          if (email === '' || pass === '') {
+            if (email === '') {
+              setEmailEr('Email address must be enter');
             }
-            if (passEr) {
-              setPassEr(passEr);
+
+            if (pass === '') {
+              setPassEr('password must be entered');
             }
+          } else if (emailEr || passEr) {
+            passValidation();
+            emailValidation();
           } else {
             props.navigation.navigate('CreateAcc');
           }
@@ -105,10 +107,10 @@ const SignIn = props => {
           fontSize: 20,
           fontWeight: '400',
           color: colors.gray,
-          marginTop: 26,
-          marginBottom: 30,
+          marginTop: hp(26),
+          marginBottom: hp(30),
         }}>
-        or sign in with
+        {strings.signIn.or}
       </Text>
 
       <View style={styles.buttonView}>
@@ -127,9 +129,8 @@ const SignIn = props => {
         />
       </View>
 
-      <View
-        style={{flexDirection: 'row', justifyContent: 'center', marginTop: 43}}>
-        <Text style={styles.textInputHead}>Don’t have an account?</Text>
+      <View style={styles.signUp}>
+        <Text style={styles.textInputHead}>{strings.signIn.noAcc}</Text>
         <TouchableOpacity
           onPress={() => {
             console.log('entered');
@@ -137,7 +138,7 @@ const SignIn = props => {
           }}>
           <Text style={{...styles.textInputHead, color: colors.lightGreen}}>
             {' '}
-            SIGN UP
+            {strings.button.signIn}
           </Text>
         </TouchableOpacity>
       </View>
@@ -157,14 +158,14 @@ const styles = StyleSheet.create({
     height: 54,
     width: 54,
     alignSelf: 'center',
-    marginTop: 91,
-    marginBottom: 73,
+    marginTop: hp(91),
+    marginBottom: hp(73),
   },
 
   imageView: {
     alignItems: 'center',
-    marginTop: 91,
-    marginBottom: 73,
+    marginTop: hp(91),
+    marginBottom: hp(73),
   },
 
   text: {
@@ -180,15 +181,15 @@ const styles = StyleSheet.create({
   },
 
   textInputView: {
-    marginHorizontal: 51,
-    marginTop: 52,
+    marginHorizontal: wp(51),
+    marginTop: hp(52),
   },
 
   textInput: {
-    height: 42,
-    width: 288,
+    height: hp(42),
+    width: hp(288),
     backgroundColor: colors.offWhite,
-    marginVertical: 13,
+    marginVertical: hp(13),
     borderRadius: 10,
   },
 
@@ -198,8 +199,14 @@ const styles = StyleSheet.create({
   },
 
   buttonView: {
-    marginHorizontal: 40,
+    marginHorizontal: wp(40),
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+  },
+
+  signUp: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: hp(43),
   },
 });

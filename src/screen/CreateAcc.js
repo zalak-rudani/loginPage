@@ -9,11 +9,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import {colors, fontSize, hp} from '../helper/GlobalFunc';
+import {colors, hp, strings} from '../helper/GlobalFunc';
 import AppComp from '../components/AppComp';
 import ButtonComp from '../components/ButtonComp';
-import ConstantImages from './constants/ConstantImages';
 import TextInputComp from '../components/TextInputComp';
+import ConstantImages from '../helper/constants/ConstantImages';
 
 const CreateAcc = props => {
   const [pass, setPass] = useState('');
@@ -29,16 +29,16 @@ const CreateAcc = props => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const NameValidation = () => {
-    if (name.length === 0) {
-      setNameEr('Name must be enter');
+    if (name === '') {
+      setNameEr('Name must be entered');
     } else if (name.length > 0) {
       setNameEr('');
     }
   };
 
   const confirmPassValidation = () => {
-    if (confirmPass.length === 0) {
-      setConfirmPassEr('Confirm password must be enter');
+    if (confirmPass === '') {
+      setConfirmPassEr('Confirm password must be entered');
     } else if (confirmPass !== pass) {
       setConfirmPassEr('Passwords do NOT match');
     } else if (confirmPass === pass) {
@@ -49,8 +49,8 @@ const CreateAcc = props => {
   const passValidation = () => {
     let reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{7,}$/;
 
-    if (pass.length === 0) {
-      setPassEr('password must be enter');
+    if (pass === '') {
+      setPassEr('password must be entered');
     } else if (reg.test(pass) === false) {
       setPassEr(
         'password must contain seven characters including one uppercase letter, one lowercase letter and one number. ',
@@ -63,8 +63,8 @@ const CreateAcc = props => {
   const emailValidation = () => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
-    if (email.length === 0) {
-      setEmailEr('Email address must be enter');
+    if (email === '') {
+      setEmailEr('Email address must be entered');
     } else if (reg.test(email) === false) {
       setEmailEr('Enter valid email address');
     } else if (reg.test(email) === true) {
@@ -84,7 +84,7 @@ const CreateAcc = props => {
         <Image source={ConstantImages.logo} style={styles.image} />
       </View>
 
-      <Text style={styles.text}>Create your account</Text>
+      <Text style={styles.text}>{strings.createAcc.create}</Text>
       <View style={{marginTop: 30}}>
         <TextInputComp
           text={'Name'}
@@ -93,7 +93,8 @@ const CreateAcc = props => {
             setName(text);
           }}
           onSubmitEditing={() => NameValidation()}
-          onPressIn={() => setNameEr('')}
+          onBlur={() => NameValidation()}
+          // onFocus={() => NameValidation()}
           error={nameEr}
         />
         <TextInputComp
@@ -102,10 +103,12 @@ const CreateAcc = props => {
           onChangeText={text => {
             setEmail(text);
           }}
-          onPressIn={() => setEmailEr('')}
           error={emailEr}
           onSubmitEditing={() => emailValidation()}
-          multiline={true}
+          onBlur={() => emailValidation()}
+          // onFocus={() => emailValidation()}
+
+          // multiline={true}
         />
         <TextInputComp
           text={'Password'}
@@ -117,7 +120,8 @@ const CreateAcc = props => {
             setPass(text);
           }}
           onSubmitEditing={() => passValidation()}
-          onPressIn={() => setPassEr('')}
+          onBlur={() => passValidation()}
+          // onFocus={() => passValidation()}
           error={passEr}
         />
 
@@ -133,12 +137,13 @@ const CreateAcc = props => {
             setConfirmPass(text);
           }}
           onSubmitEditing={() => confirmPassValidation()}
-          onPressIn={() => setConfirmPassEr('')}
+          onBlur={() => confirmPassValidation()}
+          // onFocus={() => confirmPassValidation()}
           error={confirmPassEr}
         />
       </View>
 
-      <View style={{flexDirection: 'row', marginLeft: 53, marginBottom: 30}}>
+      <View style={styles.checkBoxView}>
         <TouchableOpacity onPress={() => setCheckBox(!checkBox)}>
           <Image
             source={
@@ -148,24 +153,43 @@ const CreateAcc = props => {
           />
         </TouchableOpacity>
 
-        <Text style={styles.termText}> I understood the</Text>
+        <Text style={styles.termText}>{strings.createAcc.understood}</Text>
         <Text style={{...styles.termText, color: colors.lightGreen}}>
           {' '}
-          terms & policy.
+          {strings.createAcc.term}
         </Text>
       </View>
       <ButtonComp
         text={'SIGN UP'}
+        customStyle={{backgroundColor: colors.lightGreen}}
         onPress={() => {
-          NameValidation();
-          passValidation();
-          confirmPassValidation();
-          emailValidation();
-
-          if (checkBox === false) {
+          if (
+            email === '' ||
+            name === '' ||
+            confirmPass === '' ||
+            pass === ''
+          ) {
+            if (email === '') {
+              setEmailEr('Email must be entered');
+            }
+            if (name === '') {
+              setNameEr('Name must be entered');
+            }
+            if (confirmPass === '') {
+              setConfirmPassEr('Confirm Password must be entered');
+            }
+            if (pass === '') {
+              setPassEr('Password must be entered');
+            }
+          } else if (emailEr || nameEr || confirmPassEr || passEr) {
+            NameValidation();
+            passValidation();
+            confirmPassValidation();
+            emailValidation();
+          } else if (checkBox === false) {
             Alert.alert('You must agree term & condition');
           } else {
-            props.navigation.navigate('CreateAcc');
+            props.navigation.navigate('test');
           }
         }}
       />
@@ -179,7 +203,7 @@ const CreateAcc = props => {
           marginTop: 26,
           marginBottom: 30,
         }}>
-        or sign in with
+        {strings.signIn.or}
       </Text>
 
       <View style={styles.buttonView}>
@@ -200,10 +224,10 @@ const CreateAcc = props => {
 
       <View
         style={{flexDirection: 'row', justifyContent: 'center', marginTop: 43}}>
-        <Text style={styles.textInputHead}>Have an account?</Text>
+        <Text style={styles.textInputHead}>{strings.createAcc.haveAcc}</Text>
         <Text style={{...styles.textInputHead, color: colors.lightGreen}}>
           {' '}
-          SIGN IN
+          {strings.button.signIn}
         </Text>
       </View>
     </SafeAreaView>
@@ -233,7 +257,6 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    // fontSize: fontSize.font27,
     fontSize: 27,
     fontWeight: '600',
     textAlign: 'center',
@@ -273,5 +296,10 @@ const styles = StyleSheet.create({
     height: 13,
     width: 13,
     borderColor: colors.lightGreen,
+  },
+  checkBoxView: {
+    flexDirection: 'row',
+    marginLeft: 53,
+    marginBottom: 30,
   },
 });

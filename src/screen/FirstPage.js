@@ -2,35 +2,38 @@ import React from 'react';
 import {Text, StyleSheet, View, Image, ImageBackground} from 'react-native';
 
 import ButtonComp from '../components/ButtonComp';
-import ConstantImages from './constants/ConstantImages';
-import {colors} from '../helper/GlobalFunc';
+import {colors, hp, strings, wp} from '../helper/GlobalFunc';
+import ConstantImages from '../helper/constants/ConstantImages';
 
 const FirstPage = ({navigation}) => {
   return (
     <View style={styles.main}>
       <ImageBackground
-        source={ConstantImages.ImageBackground}
+        source={ConstantImages.backgroundImage}
         style={styles.image}>
-        {/* <View style={styles.whiteLogoView}> */}
         <Image style={styles.whiteLogo} source={ConstantImages.whiteLogo} />
-        {/* </View> */}
-        <Text style={styles.font}>HOPE FOR</Text>
-        <Text style={{...styles.font, fontWeight: '900'}}>HUMANITY</Text>
-        {/* <View style={{marginTop: 140, marginBottom: 32}}> */}
-        <View style={{position: 'absolute', bottom: 60}}>
+
+        <Text style={styles.font}>
+          {strings.firstPage.hope}
+          <Text style={{...styles.font, fontWeight: '900'}}>
+            {strings.firstPage.humanity}
+          </Text>
+        </Text>
+
+        <View style={styles.textView}>
           <Text
             style={{
               ...styles.font,
               fontWeight: '600',
               fontSize: '29',
               color: colors.darkGreen,
-              marginBottom: 20,
+              marginBottom: hp(20),
             }}>
-            {' Welcome to \n hope for humanity'}
+            {strings.firstPage.welcome}
           </Text>
 
           <ButtonComp
-            text={'Explore'}
+            text={strings.button.explore}
             onPress={() => navigation.navigate('SignIn')}
           />
         </View>
@@ -52,15 +55,15 @@ const styles = StyleSheet.create({
   },
 
   whiteLogo: {
-    height: 121,
-    width: 121,
+    height: hp(121),
+    width: hp(121),
     marginBottom: 20,
   },
 
   whiteLogoView: {
-    marginTop: 280,
-    marginHorizontal: 135,
-    marginBottom: 26,
+    marginTop: hp(280),
+    marginHorizontal: wp(135),
+    marginBottom: hp(26),
   },
 
   font: {
@@ -68,5 +71,10 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: '35',
     textAlign: 'center',
+  },
+
+  textView: {
+    position: 'absolute',
+    bottom: hp(60),
   },
 });
