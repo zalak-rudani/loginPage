@@ -209,4 +209,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: hp(43),
   },
+  
 });
