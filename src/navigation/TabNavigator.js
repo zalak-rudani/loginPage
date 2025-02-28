@@ -11,6 +11,8 @@ import Second from '../screen/Second';
 import FirstPage from '../screen/FirstPage';
 import {colors, hp} from '../helper/GlobalFunc';
 import ConstantImages from '../helper/constants/ConstantImages';
+import DrawerNavigator from './DrawerNavigator';
+import TopTabNavigator from './TopTabNavigator';
 
 const Tab = createBottomTabNavigator();
 

@@ -12,6 +12,7 @@ export const colors = {
   lightGray: '#6F6F6F',
   gray: '#888888',
   offWhite: '#FAFAFA',
+  pink: 'pink',
   transparent: 'rgba(34, 51, 34, 0.2)',
 };
 

@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: '35',
     textAlign: 'center',
+    
   },
 
   textView: {
